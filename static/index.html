@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NAI 2.8 API Playground</title>
+  <style>
+    :root {
+      --bg: #101612;
+      --raise: #18211c;
+      --sunken: #0c110e;
+      --line: #2c3c33;
+      --text: #e7f2ea;
+      --muted: #93a79a;
+      --accent: #b6e86a;
+      --accent-ink: #14210a;
+      --danger: #ff8f7d;
+      --warn: #e7c56a;
+      --get: #b6e86a;
+      --post: #8ec8ff;
+      --put: #d2c2ff;
+      --patch: #e7c56a;
+      --delete: #ff8f7d;
+      --sans: "Segoe UI", sans-serif;
+      --mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.45 var(--sans);
+    }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--sunken);
+    }
+    .brand { display: flex; gap: 12px; align-items: center; }
+    .mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--accent); color: var(--accent-ink);
+      display: grid; place-items: center; font-weight: 700;
+    }
+    h1 { font-size: 16px; margin: 0; font-weight: 650; }
+    header p, .sub { margin: 0; color: var(--muted); font-size: 12px; }
+    header a { color: var(--accent); }
+    .connection {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr 0.8fr 1fr auto;
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--raise);
+    }
+    label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+    label input, label textarea, label select, label .muted {
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 13px;
+    }
+    input[type="text"], input[type="password"], input[type="number"], input[type="file"], textarea, select {
+      background: var(--sunken);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 13px;
+      color: var(--text);
+    }
+    textarea { width: 100%; min-height: 220px; resize: vertical; font-family: var(--mono); line-height: 1.4; }
+    .checks { display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--text); }
+    .checks label { flex-direction: row; align-items: center; text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--text); }
+    .workspace { display: grid; grid-template-columns: 320px 1fr; flex: 1; min-height: 0; }
+    aside {
+      border-right: 1px solid var(--line);
+      overflow: auto;
+      background: var(--sunken);
+      padding: 12px;
+    }
+    #filter { width: 100%; margin-bottom: 12px; }
+    aside h2 {
+      margin: 16px 0 6px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .op, .nav-link {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 8px;
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      color: var(--text);
+    }
+    .op:hover, .nav-link:hover, .op.active, .nav-link.active { background: #223028; }
+    .verb {
+      font: 11px/1 var(--mono);
+      width: 52px;
+      flex: 0 0 52px;
+      font-weight: 700;
+    }
+    .verb-get { color: var(--get); }
+    .verb-post { color: var(--post); }
+    .verb-put { color: var(--put); }
+    .verb-patch { color: var(--patch); }
+    .verb-delete { color: var(--delete); }
+    .op-name { color: var(--text); }
+    main { overflow: auto; padding: 18px 22px 28px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card, .panel {
+      background: var(--raise);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .card h3, .panel h3 { margin: 0 0 8px; font-size: 15px; }
+    .card p, .panel p { margin: 0 0 8px; color: #d5e4da; }
+    .card ul, .panel ul { margin: 0; padding-left: 18px; }
+    .card li, .panel li { margin: 4px 0; }
+    code, .path {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .title-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .path-line { margin: 10px 0; font-family: var(--mono); font-size: 13px; color: #d7efe0; word-break: break-all; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+    .primary, .ghost, .step {
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--sunken);
+    }
+    .primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 650; }
+    .primary:disabled { opacity: 0.6; cursor: wait; }
+    .step { display: block; width: 100%; text-align: left; margin-top: 6px; }
+    .note, .banner {
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      background: #243024;
+      color: #d7efc4;
+    }
+    .banner.warn { background: #332b16; color: var(--warn); }
+    .banner.danger { background: #3a201c; color: var(--danger); }
+    #response {
+      margin-top: 8px;
+      background: var(--sunken);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    #response pre {
+      margin: 8px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: var(--mono);
+      font-size: 12px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    .status-2 { color: var(--get); }
+    .status-4 { color: var(--warn); }
+    .status-5, .status-0 { color: var(--danger); }
+    .muted { color: var(--muted); text-transform: none; letter-spacing: 0; font-size: 12px; }
+    .history { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .history button { font-family: var(--mono); font-size: 11px; }
+    img.preview { max-width: 100%; border-radius: 8px; margin-top: 8px; }
+    .model-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; max-height: 520px; overflow: auto; }
+    .model-row, .saved-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 7px 10px; border-radius: 8px; background: var(--sunken); border: 1px solid var(--line);
+    }
+    .model-row span, .saved-row span { font-family: var(--mono); font-size: 12px; }
+    .row-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+    @media (max-width: 1100px) {
+      .connection, .cards, .grid-2, .workspace { grid-template-columns: 1fr; }
+      .workspace { height: auto; }
+      aside { max-height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="mark">N</div>
+      <div>
+        <h1>NAI 2.8 API Playground</h1>
+        <p>Enterprise AI management, direct inference, and Agent Gateway</p>
+      </div>
+    </div>
+    <a href="https://www.nutanix.dev/api_reference/apis/nai2.8.html" target="_blank" rel="noreferrer">OpenAPI reference</a>
+  </header>
+  <form class="connection" id="connection">
+    <label>Cluster origin
+      <input id="baseUrl" type="text" placeholder="https://nai.lab.local" autocomplete="off" />
+    </label>
+    <label>Management user
+      <input id="username" type="text" autocomplete="username" />
+    </label>
+    <label>Management password
+      <input id="password" type="password" autocomplete="current-password" />
+    </label>
+    <label>API key
+      <input id="apiKey" type="password" placeholder="Bearer token for inference and gateway" autocomplete="off" />
+    </label>
+    <div class="checks">
+      <label><input id="insecure" type="checkbox" checked /> Allow self-signed TLS</label>
+      <label><input id="remember" type="checkbox" /> Remember secrets in this browser</label>
+      <label>Timeout seconds <input id="timeout" type="number" min="5" max="600" value="120" /></label>
+    </div>
+  </form>
+  <div class="workspace">
+    <aside>
+      <input id="filter" type="text" placeholder="Filter operations" />
+      <div id="nav"></div>
+    </aside>
+    <main id="main"></main>
+  </div>
+  <script>
+    const STORAGE_KEY = "nai-playground-settings";
+    const historyItems = [];
+    let catalog = null;
+    let current = { kind: "home" };
+
+    const playbooks = [
+      {
+        title: "Check the cluster",
+        steps: [
+          ["get-api-enterpriseai-v1-version", "Get version"],
+          ["get-api-enterpriseai-v1-users-me", "Current user"],
+          ["get-api-enterpriseai-v1-cluster-health", "Cluster health"]
+        ]
+      },
+      {
+        title: "Call a model through Agent Gateway",
+        steps: [
+          ["post-api-enterpriseai-v1-credentials", "Store a provider credential"],
+          ["post-api-enterpriseai-v1-providers", "Create a provider"],
+          ["post-api-enterpriseai-v1-unified-endpoints", "Create a unified endpoint"],
+          ["post-api-enterpriseai-v1-apikeys", "Create an API key"],
+          ["post-enterpriseai-gateway-v1-chat-completions", "Chat on the gateway"],
+          ["post-enterpriseai-gateway-v1-messages", "Anthropic Messages"]
+        ]
+      },
+      {
+        title: "Govern an MCP server",
+        steps: [
+          ["post-api-enterpriseai-v1-mcp-servers", "Create an MCP server"],
+          ["get-api-enterpriseai-v1-mcp-servers-mcp-server-id-tools", "List its tools"],
+          ["post-api-enterpriseai-v1-mcp-connectors", "Create a connector"],
+          ["post-api-enterpriseai-v1-mcpkeys", "Create an MCP key"],
+          ["preset:mcp-tools-list", "Call tools/list"]
+        ]
+      }
+    ];
+
+    function el(tag, attrs, children) {
+      const node = document.createElement(tag);
+      for (const [key, value] of Object.entries(attrs || {})) {
+        if (key === "class") node.className = value;
+        else if (key === "dataset") Object.assign(node.dataset, value);
+        else node.setAttribute(key, value);
+      }
+      for (const child of children || []) node.append(child);
+      return node;
+    }
+
+    function text(value) {
+      return document.createTextNode(value == null ? "" : String(value));
+    }
+
+    function currentId() {
+      if (current.kind === "op") return current.op.id;
+      if (current.kind === "preset") return "preset:" + current.preset.id;
+      if (current.kind === "custom") return "custom";
+      if (current.kind === "provider-models") return "provider-models";
+      return "";
+    }
+
+    function findOperation(id) {
+      for (const group of catalog.groups) {
+        const found = group.operations.find((op) => op.id === id);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function settingsFromForm() {
+      return {
+        baseUrl: document.getElementById("baseUrl").value.trim(),
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        apiKey: document.getElementById("apiKey").value.trim(),
+        insecure: document.getElementById("insecure").checked,
+        remember: document.getElementById("remember").checked,
+        timeout: Number(document.getElementById("timeout").value) || 120
+      };
+    }
+
+    function saveSettings() {
+      const values = settingsFromForm();
+      const stored = {
+        baseUrl: values.baseUrl,
+        username: values.username,
+        insecure: values.insecure,
+        remember: values.remember,
+        timeout: values.timeout
+      };
+      if (values.remember) {
+        stored.password = values.password;
+        stored.apiKey = values.apiKey;
+      } else {
+        localStorage.removeItem(PROVIDER_STORAGE);
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    }
+
+    function loadSettings() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        for (const id of ["baseUrl", "username", "password", "apiKey", "timeout"]) {
+          if (stored[id]) document.getElementById(id).value = stored[id];
+        }
+        if (typeof stored.insecure === "boolean") document.getElementById("insecure").checked = stored.insecure;
+        document.getElementById("remember").checked = Boolean(stored.remember);
+      } catch (_) {
+        /* ignore broken local storage */
+      }
+    }
+
+    function basicHeader(username, password) {
+      const bytes = new TextEncoder().encode(`${username}:${password}`);
+      let binary = "";
+      bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+      return `Basic ${btoa(binary)}`;
+    }
+
+    function bearerHeader(apiKey) {
+      if (/^bearer\s+/i.test(apiKey)) return apiKey;
+      return `Bearer ${apiKey}`;
+    }
+
+    function psQuote(value) {
+      return `'${String(value).replaceAll("'", "''")}'`;
+    }
+
+    function renderNav() {
+      if (!catalog) return;
+      const nav = document.getElementById("nav");
+      const query = document.getElementById("filter").value.trim().toLowerCase();
+      nav.replaceChildren();
+      if (!query || "provider models".includes(query)) {
+        nav.append(linkButton("Provider models", "provider-models", openProviderModels));
+      }
+      nav.append(linkButton("Custom request", "custom", () => openCustom()));
+      const presets = catalog.presets.filter((preset) => {
+        if (!query) return true;
+        return `${preset.title} ${preset.note}`.toLowerCase().includes(query);
+      });
+      if (presets.length) {
+        nav.append(el("h2", {}, [text("MCP protocol templates")]));
+        for (const preset of presets) {
+          nav.append(linkButton(preset.title, "preset:" + preset.id, () => openPreset(preset)));
+        }
+      }
+      for (const group of catalog.groups) {
+        const operations = group.operations.filter((op) => {
+          if (!query) return true;
+          return `${op.method} ${op.path} ${op.summary} ${op.tag}`.toLowerCase().includes(query);
+        });
+        if (!operations.length) continue;
+        nav.append(el("h2", {}, [text(`${group.title} · ${operations.length}`)]));
+        for (const op of operations) {
+          const button = el("button", { class: "op", type: "button", dataset: { id: op.id } }, [
+            el("span", { class: `verb verb-${op.method.toLowerCase()}` }, [text(op.method)]),
+            el("span", { class: "op-name" }, [text(op.summary)])
+          ]);
+          button.addEventListener("click", () => openOperation(op));
+          nav.append(button);
+        }
+      }
+      markActive();
+    }
+
+    function linkButton(label, id, onClick) {
+      const button = el("button", { class: "nav-link", type: "button", dataset: { id } }, [text(label)]);
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function markActive() {
+      const id = currentId();
+      document.querySelectorAll("#nav button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.id === id);
+      });
+    }
+
+    const PROVIDER_STORAGE = "nai-provider-keys";
+    let providerKeys = [];
+    const PROVIDER_DEFAULTS = {
+      openai: { label: "OpenAI", baseUrl: "https://api.openai.com/v1" },
+      anthropic: { label: "Anthropic", baseUrl: "https://api.anthropic.com/v1" },
+      compatible: { label: "OpenAI compatible", baseUrl: "https://openrouter.ai/api/v1" }
+    };
+
+    function hydrateProviderKeys() {
+      try {
+        const settings = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        if (!settings.remember) return;
+        const stored = JSON.parse(localStorage.getItem(PROVIDER_STORAGE) || "[]");
+        if (Array.isArray(stored)) providerKeys = stored;
+      } catch (_) {
+        providerKeys = [];
+      }
+    }
+
+    function loadProviderKeys() {
+      return providerKeys;
+    }
+
+    function saveProviderKeys(list) {
+      providerKeys = list;
+      if (document.getElementById("remember").checked) {
+        localStorage.setItem(PROVIDER_STORAGE, JSON.stringify(list));
+      } else {
+        localStorage.removeItem(PROVIDER_STORAGE);
+      }
+    }
+
+    function modelsUrl(baseUrl) {
+      const trimmed = String(baseUrl || "").trim().replace(/\/+$/, "");
+      if (!trimmed) throw new Error("Enter the provider base URL");
+      if (trimmed.endsWith("/models")) return trimmed;
+      return `${trimmed}/models`;
+    }
+
+    function providerHeaders(provider) {
+      const headers = { Accept: "application/json" };
+      const key = (provider.apiKey || "").trim();
+      if (!key) throw new Error("Enter an API key");
+      if (provider.platform === "anthropic") {
+        headers["x-api-key"] = key.replace(/^bearer\s+/i, "");
+        headers["anthropic-version"] = "2023-06-01";
+      } else {
+        headers.Authorization = /^bearer\s+/i.test(key) ? key : `Bearer ${key}`;
+      }
+      return headers;
+    }
+
+    async function fetchProviderModels(provider) {
+      const headers = providerHeaders(provider);
+      const models = [];
+      let url = modelsUrl(provider.baseUrl);
+      for (let page = 0; page < 20; page += 1) {
+        const response = await fetch("/proxy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            method: "GET",
+            path: url,
+            headers,
+            insecure: document.getElementById("insecure").checked,
+            timeout: 60
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "The local proxy rejected the request");
+        if (!data.status || data.status >= 400) {
+          throw new Error(pretty(data.body || data.error || `HTTP ${data.status || 0}`));
+        }
+        let parsed;
+        try {
+          parsed = JSON.parse(data.body || "{}");
+        } catch (_) {
+          throw new Error(data.body || "Response was not JSON");
+        }
+        const rows = Array.isArray(parsed.data) ? parsed.data : (Array.isArray(parsed) ? parsed : []);
+        for (const row of rows) {
+          const id = row.id || row.name;
+          if (!id || models.some((item) => item.id === id)) continue;
+          models.push({ id, detail: row.display_name || row.owned_by || row.type || "" });
+        }
+        if (!parsed.has_more || !parsed.last_id) break;
+        const next = new URL(modelsUrl(provider.baseUrl));
+        next.searchParams.set("limit", "100");
+        next.searchParams.set("after_id", parsed.last_id);
+        url = next.toString();
+      }
+      models.sort((left, right) => left.id.localeCompare(right.id));
+      return models;
+    }
+
+    function openProviderModels() {
+      current = { kind: "provider-models", models: current.kind === "provider-models" ? current.models : [] };
+      renderProviderModels();
+    }
+
+    function renderProviderModels() {
+      markActive();
+      const main = document.getElementById("main");
+      const providers = loadProviderKeys();
+      main.replaceChildren();
+      main.append(el("div", { class: "title-row" }, [
+        el("h2", {}, [text("Provider models")]),
+        el("span", { class: "badge" }, [text("Keys stay on this machine")])
+      ]));
+      main.append(el("p", {}, [text("Add an OpenAI, Anthropic, or OpenAI-compatible key and list the models that key can call. The key is sent only through this local proxy. Check Remember secrets to keep keys after a refresh.")]));
+
+      const platform = el("select", { id: "providerPlatform" });
+      for (const [value, info] of Object.entries(PROVIDER_DEFAULTS)) {
+        platform.append(el("option", { value }, [text(info.label)]));
+      }
+      const base = el("input", { id: "providerBase", type: "text", value: PROVIDER_DEFAULTS.openai.baseUrl });
+      platform.addEventListener("change", () => {
+        base.value = PROVIDER_DEFAULTS[platform.value].baseUrl;
+      });
+      const form = el("div", { class: "grid-2" }, [
+        el("label", {}, [text("Name"), el("input", { id: "providerName", type: "text", placeholder: "openai-lab" })]),
+        el("label", {}, [text("Platform"), platform]),
+        el("label", {}, [text("API key"), el("input", { id: "providerKey", type: "password", autocomplete: "off" })]),
+        el("label", {}, [text("Base URL"), base])
+      ]);
+      main.append(form);
+      main.append(el("p", { class: "muted" }, [text("Models are requested at the base URL plus /models. OpenAI is https://api.openai.com/v1. Anthropic is https://api.anthropic.com/v1. An OpenAI-compatible host such as OpenRouter is https://openrouter.ai/api/v1.")]));
+
+      const actions = el("div", { class: "actions" }, [
+        el("button", { class: "primary", id: "saveProvider", type: "button" }, [text("Save key")]),
+        el("button", { class: "ghost", id: "listProvider", type: "button" }, [text("List models")])
+      ]);
+      main.append(actions);
+      main.append(el("div", { id: "providerStatus" }));
+      main.append(el("h3", {}, [text("Saved keys")]));
+      const saved = el("div", { id: "savedProviders", class: "model-list" });
+      if (!providers.length) saved.append(el("p", { class: "muted" }, [text("No provider keys saved yet.")]));
+      for (const provider of providers) {
+        const row = el("div", { class: "saved-row" }, [
+          el("span", {}, [text(`${provider.name} · ${PROVIDER_DEFAULTS[provider.platform].label}`)]),
+          el("div", { class: "row-actions" }, [
+            el("button", { class: "ghost", type: "button" }, [text("List")]),
+            el("button", { class: "ghost", type: "button" }, [text("Remove")])
+          ])
+        ]);
+        row.querySelectorAll("button")[0].addEventListener("click", () => listSavedProvider(provider.id));
+        row.querySelectorAll("button")[1].addEventListener("click", () => removeProvider(provider.id));
+        saved.append(row);
+      }
+      main.append(saved);
+      const filter = el("input", { id: "modelFilter", type: "text", placeholder: "Filter model ids" });
+      filter.addEventListener("input", renderModelResults);
+      main.append(el("h3", {}, [text("Models")]));
+      main.append(filter);
+      main.append(el("div", { id: "modelResults", class: "model-list" }));
+      document.getElementById("saveProvider").addEventListener("click", saveProviderFromForm);
+      document.getElementById("listProvider").addEventListener("click", () => listProviderFromForm(false));
+      renderModelResults();
+    }
+
+    function providerFromForm() {
+      const platform = document.getElementById("providerPlatform").value;
+      return {
+        id: crypto.randomUUID(),
+        name: document.getElementById("providerName").value.trim() || PROVIDER_DEFAULTS[platform].label,
+        platform,
+        apiKey: document.getElementById("providerKey").value.trim(),
+        baseUrl: document.getElementById("providerBase").value.trim()
+      };
+    }
+
+    function saveProviderFromForm() {
+      const provider = providerFromForm();
+      if (!provider.apiKey) {
+        setProviderStatus("Enter an API key before saving.", true);
+        return;
+      }
+      const list = loadProviderKeys().filter((item) => item.name !== provider.name || item.platform !== provider.platform);
+      list.push(provider);
+      saveProviderKeys(list);
+      current.models = current.models || [];
+      renderProviderModels();
+      setProviderStatus(`Saved ${provider.name}.`);
+    }
+
+    async function listProviderFromForm() {
+      const provider = providerFromForm();
+      await runProviderList(provider);
+    }
+
+    async function listSavedProvider(id) {
+      const provider = loadProviderKeys().find((item) => item.id === id);
+      if (!provider) return;
+      await runProviderList(provider);
+    }
+
+    function removeProvider(id) {
+      saveProviderKeys(loadProviderKeys().filter((item) => item.id !== id));
+      renderProviderModels();
+    }
+
+    async function runProviderList(provider) {
+      const button = document.getElementById("listProvider");
+      if (button) button.disabled = true;
+      setProviderStatus(`Listing models from ${provider.baseUrl}…`);
+      try {
+        current.models = await fetchProviderModels(provider);
+        current.listed = true;
+        setProviderStatus(`${current.models.length} models from ${provider.name}.`);
+        renderModelResults();
+      } catch (error) {
+        current.models = [];
+        current.listed = false;
+        setProviderStatus(error.message, true);
+        renderModelResults();
+      } finally {
+        if (button) button.disabled = false;
+      }
+    }
+
+    function setProviderStatus(message, failed) {
+      const host = document.getElementById("providerStatus");
+      if (!host) return;
+      host.replaceChildren(el("div", { class: failed ? "banner danger" : "note" }, [text(message)]));
+    }
+
+    function renderModelResults() {
+      const host = document.getElementById("modelResults");
+      if (!host) return;
+      const query = (document.getElementById("modelFilter")?.value || "").trim().toLowerCase();
+      const models = (current.models || []).filter((model) => !query || `${model.id} ${model.detail}`.toLowerCase().includes(query));
+      host.replaceChildren();
+      if (!models.length) {
+        const empty = current.models?.length ? "No models match that filter." : (current.listed ? "The provider returned no models." : "List a provider to see model ids.");
+        host.append(el("p", { class: "muted" }, [text(empty)]));
+        return;
+      }
+      for (const model of models) {
+        const copy = el("button", { class: "ghost", type: "button" }, [text("Copy")]);
+        copy.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(model.id);
+          copy.textContent = "Copied";
+          setTimeout(() => { copy.textContent = "Copy"; }, 1000);
+        });
+        host.append(el("div", { class: "model-row" }, [
+          el("span", {}, [text(model.detail ? `${model.id} · ${model.detail}` : model.id)]),
+          copy
+        ]));
+      }
+    }
+
+    function renderHome() {
+      current = { kind: "home" };
+      markActive();
+      const main = document.getElementById("main");
+      main.replaceChildren();
+      main.append(el("div", { class: "title-row" }, [
+        el("h2", {}, [text("What this playground covers")]),
+        el("span", { class: "badge" }, [text(`${catalog.version} · docs updated ${catalog.updated}`)])
+      ]));
+      const intro = el("p", { class: "muted" }, [
+        text("Catalog built from the published NAI 2.8 OpenAPI document. Management calls use Basic auth. Inference and Agent Gateway calls use a Bearer API key. Requests leave this machine only through the local proxy.")
+      ]);
+      main.append(intro);
+      const cards = el("div", { class: "cards" });
+      cards.append(card("Two API planes", [
+        "Management lives under /api/enterpriseai/v1/ and is marked experimental. It uses HTTP Basic auth.",
+        "Inference lives under /enterpriseai/v1/ and follows the OpenAI API where Nutanix maps it. Those calls use Authorization: Bearer <api key>.",
+        "Rerank also has /enterpriseai/v2/rerank so unified endpoints can serve a Cohere-compatible contract."
+      ]));
+      cards.append(card("Agent Gateway calls", [
+        "The product name is Nutanix Agent Gateway. The API reference calls the same front door the AI Gateway and documents this base path: /enterpriseai/gateway/v1/.",
+        "Documented examples: GET /models, POST /chat/completions, POST /embeddings, and POST /messages.",
+        "Audio stays on /enterpriseai/v1/. Image generation is included here from the gateway base-path rule and apiSpec openaiImageGenerationsV1APISpec. Confirm the Access URL on the endpoint page.",
+        "On gateway calls, model is the unified endpoint name. Anthropic Messages is gateway-only."
+      ]));
+      cards.append(card("Agent Gateway admin", [
+        "Unified endpoints fan in to internal NAI endpoints or external providers. mode is loadbalancer or fallback.",
+        "apiSpec selects the contract: openaiChatV1APISpec, openaiEmbeddingsV1APISpec, openaiImageGenerationsV1APISpec, anthropicMessagesV1APISpec, or cohereRerankV2APISpec.",
+        "Rate limits can be global, per API key, or keyed by a request header so one application key can still budget individual users.",
+        "MCP servers are local (docker package inside NAI) or remote (a URL). Connectors choose which tools from those servers a key may call."
+      ]));
+      cards.append(card("MCP protocol", [
+        "The introduction says connectors support MCP specification 2025-06-18 for tools/, prompts/, and resources/.",
+        "Those protocol routes are not operations in this OpenAPI file. The templates send JSON-RPC for streamable HTTP. Paste the connector access path from the NAI UI before you send one."
+      ]));
+      main.append(cards);
+      const books = el("div", { class: "cards" });
+      for (const book of playbooks) books.append(playbookCard(book));
+      main.append(el("h2", {}, [text("Suggested sequences")]));
+      main.append(books);
+    }
+
+    function card(title, lines) {
+      const node = el("article", { class: "card" }, [el("h3", {}, [text(title)])]);
+      const list = el("ul");
+      for (const line of lines) list.append(el("li", {}, [text(line)]));
+      node.append(list);
+      return node;
+    }
+
+    function playbookCard(book) {
+      const node = el("article", { class: "card" }, [el("h3", {}, [text(book.title)])]);
+      for (const [id, label] of book.steps) {
+        const button = el("button", { class: "step", type: "button" }, [text(label)]);
+        button.addEventListener("click", () => openRef(id));
+        node.append(button);
+      }
+      return node;
+    }
+
+    function openRef(id) {
+      if (id.startsWith("preset:")) {
+        const preset = catalog.presets.find((item) => item.id === id.slice(7));
+        if (preset) openPreset(preset);
+        return;
+      }
+      const op = findOperation(id);
+      if (op) openOperation(op);
+    }
+
+    function openCustom() {
+      current = {
+        kind: "custom",
+        method: "GET",
+        path: "/api/enterpriseai/v1/version",
+        auth: "basic",
+        headers: {},
+        body: "",
+        note: "Path is appended to the cluster origin. A full https URL is sent as-is."
+      };
+      renderCustom();
+    }
+
+    function openPreset(preset) {
+      current = {
+        kind: "preset",
+        preset,
+        method: preset.method,
+        path: preset.path,
+        auth: preset.auth || "bearer",
+        headers: preset.headers || {},
+        body: JSON.stringify(preset.body, null, 2),
+        note: preset.note
+      };
+      renderCustom();
+    }
+
+    function openOperation(op) {
+      current = { kind: "op", op };
+      renderOperation();
+    }
+
+    function renderOperation() {
+      const op = current.op;
+      markActive();
+      const main = document.getElementById("main");
+      main.replaceChildren();
+      main.append(el("div", { class: "title-row" }, [
+        el("span", { class: `verb verb-${op.method.toLowerCase()}` }, [text(op.method)]),
+        el("h2", {}, [text(op.summary)]),
+        el("span", { class: "badge" }, [text(op.auth === "basic" ? "Basic auth" : op.auth === "bearer" ? "Bearer API key" : "No auth in the spec")])
+      ]));
+      if (op.description) main.append(el("p", {}, [text(op.description)]));
+      if (op.note) main.append(el("div", { class: "note" }, [text(op.note)]));
+      if (op.method !== "GET" && op.method !== "HEAD") {
+        const banner = el("div", { class: op.method === "DELETE" ? "banner danger" : "banner warn" });
+        banner.append(text(op.method === "DELETE"
+          ? "This deletes a resource on the cluster."
+          : "This call can create or change a resource on the cluster."));
+        main.append(banner);
+      }
+      main.append(el("div", { class: "path-line", id: "pathPreview" }, [text(op.path)]));
+
+      const pathNames = [...op.path.matchAll(/\{([^}]+)\}/g)].map((match) => match[1]);
+      const pathFields = el("div", { class: "grid-2", id: "pathFields" });
+      for (const name of pathNames) {
+        pathFields.append(field(name, `path-${name}`, ""));
+      }
+      if (pathNames.length) main.append(pathFields);
+
+      const queryParams = (op.parameters || []).filter((param) => param.in === "query");
+      const queryFields = el("div", { class: "grid-2", id: "queryFields" });
+      for (const param of queryParams) queryFields.append(field(param.name, `query-${param.name}`, "", param.description));
+      if (queryParams.length) main.append(queryFields);
+
+      main.append(el("label", {}, [
+        text("Extra headers JSON"),
+        el("textarea", { id: "extraHeaders", spellcheck: "false" }, [text("{\n}\n")])
+      ]));
+
+      if (op.bodyKind === "multipart") {
+        const fields = el("div", { class: "grid-2" });
+        for (const name of ["model", "language", "prompt", "response_format", "temperature"]) {
+          fields.append(field(name, `form-${name}`, name === "model" ? "model-id" : ""));
+        }
+        main.append(fields);
+        const file = el("label", {}, [text("Audio file"), el("input", { id: "audioFile", type: "file" })]);
+        main.append(file);
+        main.append(el("p", { class: "muted" }, [text("Audio APIs use multipart form data and stay on /enterpriseai/v1/. They are outside the Agent Gateway base path.")]));
+      } else if (op.bodyKind === "json") {
+        const example = op.example == null ? "" : JSON.stringify(op.example, null, 2);
+        main.append(el("label", {}, [
+          text("JSON body"),
+          el("textarea", { id: "body", spellcheck: "false" }, [text(example)])
+        ]));
+      }
+
+      if (op.method === "DELETE") {
+        const confirm = el("label", { class: "checks" }, [
+          el("input", { id: "confirmDelete", type: "checkbox" }),
+          text("I intend to delete this resource")
+        ]);
+        main.append(confirm);
+      }
+      main.append(actionRow());
+      main.append(responsePane());
+      document.getElementById("send").addEventListener("click", send);
+      document.getElementById("copyCurl").addEventListener("click", copyCurl);
+      const format = document.getElementById("formatJson");
+      if (format) format.addEventListener("click", formatBody);
+      refreshPreview();
+      for (const input of main.querySelectorAll("input, textarea")) {
+        input.addEventListener("input", refreshPreview);
+      }
+    }
+
+    function renderCustom() {
+      markActive();
+      const main = document.getElementById("main");
+      main.replaceChildren();
+      const title = current.preset ? current.preset.title : "Custom request";
+      main.append(el("div", { class: "title-row" }, [
+        el("h2", {}, [text(title)]),
+        el("span", { class: "badge" }, [text("Manual")])
+      ]));
+      if (current.note) main.append(el("div", { class: "note" }, [text(current.note)]));
+      const row = el("div", { class: "grid-2" });
+      const method = el("select", { id: "customMethod" });
+      for (const verb of ["GET", "POST", "PUT", "PATCH", "DELETE"]) {
+        const option = el("option", { value: verb }, [text(verb)]);
+        if (verb === current.method) option.selected = true;
+        method.append(option);
+      }
+      row.append(el("label", {}, [text("Method"), method]));
+      const auth = el("select", { id: "customAuth" });
+      for (const [value, label] of [["basic", "Basic auth"], ["bearer", "Bearer API key"], ["none", "No auth"]]) {
+        const option = el("option", { value }, [text(label)]);
+        if (value === current.auth) option.selected = true;
+        auth.append(option);
+      }
+      row.append(el("label", {}, [text("Auth"), auth]));
+      main.append(row);
+      main.append(el("label", {}, [
+        text("Path or full URL"),
+        el("input", { id: "customPath", type: "text", value: current.path || "", placeholder: "/enterpriseai/gateway/v1/chat/completions" })
+      ]));
+      main.append(el("label", {}, [
+        text("Extra headers JSON"),
+        el("textarea", { id: "extraHeaders", spellcheck: "false" }, [text(JSON.stringify(current.headers || {}, null, 2))])
+      ]));
+      main.append(el("label", {}, [
+        text("JSON body"),
+        el("textarea", { id: "body", spellcheck: "false" }, [text(current.body || "")])
+      ]));
+      main.append(actionRow());
+      main.append(responsePane());
+      document.getElementById("send").addEventListener("click", send);
+      document.getElementById("copyCurl").addEventListener("click", copyCurl);
+      document.getElementById("formatJson").addEventListener("click", formatBody);
+    }
+
+    function field(label, id, value, hint) {
+      const input = el("input", { id, type: "text", value: value || "" });
+      const node = el("label", {}, [text(label), input]);
+      if (hint) node.append(el("span", { class: "muted" }, [text(hint)]));
+      return node;
+    }
+
+    function actionRow() {
+      const row = el("div", { class: "actions" }, [
+        el("button", { class: "primary", id: "send", type: "button" }, [text("Send")]),
+        el("button", { class: "ghost", id: "copyCurl", type: "button" }, [text("Copy PowerShell curl")]),
+        el("button", { class: "ghost", id: "formatJson", type: "button" }, [text("Format JSON")])
+      ]);
+      return row;
+    }
+
+    function responsePane() {
+      return el("section", { id: "response" }, [
+        el("div", { id: "responseMeta" }, [text("Response appears here.")]),
+        el("pre", { id: "responseBody" }),
+        el("div", { class: "history", id: "history" })
+      ]);
+    }
+
+    function filledPath(template) {
+      return template.replace(/\{([^}]+)\}/g, (_, name) => {
+        const input = document.getElementById(`path-${name}`);
+        const value = input && input.value.trim();
+        if (!value) return `{${name}}`;
+        return encodeURIComponent(value);
+      });
+    }
+
+    function refreshPreview() {
+      const preview = document.getElementById("pathPreview");
+      if (!preview || current.kind !== "op") return;
+      const settings = settingsFromForm();
+      const origin = settings.baseUrl.replace(/\/$/, "");
+      preview.textContent = `${origin}${filledPath(current.op.path)}`;
+    }
+
+    function headerObject() {
+      const raw = document.getElementById("extraHeaders");
+      if (!raw || !raw.value.trim()) return {};
+      const parsed = JSON.parse(raw.value);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw new Error("Extra headers must be a JSON object");
+      }
+      return parsed;
+    }
+
+    function collect() {
+      const settings = settingsFromForm();
+      let method = "GET";
+      let path = "/";
+      let auth = "none";
+      let bodyKind = "none";
+      const query = {};
+      if (current.kind === "op") {
+        const op = current.op;
+        method = op.method;
+        path = filledPath(op.path);
+        if (path.includes("{")) throw new Error("Fill every path parameter before sending");
+        auth = op.auth;
+        bodyKind = op.bodyKind;
+        for (const param of op.parameters || []) {
+          if (param.in !== "query") continue;
+          const input = document.getElementById(`query-${param.name}`);
+          if (input && input.value.trim()) query[param.name] = input.value.trim();
+        }
+      } else {
+        method = document.getElementById("customMethod").value;
+        path = document.getElementById("customPath").value.trim();
+        auth = document.getElementById("customAuth").value;
+        bodyKind = "json";
+        if (!path) throw new Error("Enter a path or a full URL");
+      }
+      if (!path.startsWith("http") && !settings.baseUrl) {
+        throw new Error("Set the cluster origin first");
+      }
+      const headers = headerObject();
+      headers.Accept = headers.Accept || "application/json";
+      if (auth === "basic") {
+        if (!settings.username) throw new Error("Enter the management user and password");
+        headers.Authorization = basicHeader(settings.username, settings.password);
+      } else if (auth === "bearer") {
+        if (!settings.apiKey) throw new Error("Enter an API key");
+        headers.Authorization = bearerHeader(settings.apiKey);
+      }
+      const payload = {
+        baseUrl: settings.baseUrl,
+        method,
+        path,
+        query,
+        headers,
+        insecure: settings.insecure,
+        timeout: settings.timeout,
+        bodyKind
+      };
+      if (bodyKind === "multipart") {
+        const fields = {};
+        for (const name of ["model", "language", "prompt", "response_format", "temperature"]) {
+          const input = document.getElementById(`form-${name}`);
+          if (input && input.value.trim()) fields[name] = input.value.trim();
+        }
+        payload.fields = fields;
+        const file = document.getElementById("audioFile").files[0];
+        if (file) {
+          payload.file = { field: "file", name: file.name, type: file.type || "application/octet-stream" };
+          payload._file = file;
+        }
+      } else if (bodyKind === "json") {
+        const body = document.getElementById("body");
+        if (body && body.value.trim() && method !== "GET" && method !== "HEAD") payload.body = body.value;
+      }
+      if (current.kind === "op" && current.op.method === "DELETE") {
+        const confirm = document.getElementById("confirmDelete");
+        if (!confirm || !confirm.checked) throw new Error("Confirm the delete before sending");
+      }
+      return payload;
+    }
+
+    async function fileBase64(file) {
+      const buffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    async function send() {
+      const button = document.getElementById("send");
+      button.disabled = true;
+      try {
+        const payload = collect();
+        if (payload._file) {
+          payload.file.base64 = await fileBase64(payload._file);
+          delete payload._file;
+        }
+        const response = await fetch("/proxy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        showResponse(data, payload);
+      } catch (error) {
+        showResponse({ status: 0, body: error.message, headers: {}, elapsedMs: 0 }, null);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function showResponse(data, payload) {
+      const meta = document.getElementById("responseMeta");
+      const klass = data.status >= 500 || !data.status ? "status-5" : data.status >= 400 ? "status-4" : "status-2";
+      meta.replaceChildren();
+      meta.append(el("strong", { class: klass }, [text(data.status ? String(data.status) : "Error")]));
+      meta.append(text(`  ${data.elapsedMs || 0} ms`));
+      if (data.url) meta.append(el("div", { class: "path-line" }, [text(data.url)]));
+      if (data.error) meta.append(el("div", { class: "banner danger" }, [text(data.error)]));
+      if (data.truncated) meta.append(el("div", { class: "banner warn" }, [text("Response truncated at 8 MB.")]));
+      const pre = document.getElementById("responseBody");
+      const contentType = headerValue(data.headers, "content-type");
+      pre.textContent = "";
+      const old = document.querySelector("#response img.preview");
+      if (old) old.remove();
+      if (data.binary && contentType.startsWith("image/")) {
+        const img = el("img", { class: "preview", alt: "Binary response" });
+        img.src = `data:${contentType};base64,${data.body}`;
+        pre.before(img);
+        pre.textContent = `Binary image (${contentType})`;
+      } else if (data.binary) {
+        pre.textContent = `Binary response (${contentType || "unknown type"})`;
+      } else {
+        pre.textContent = pretty(data.body || data.error || "");
+      }
+      if (payload) rememberCall(payload, data.status);
+      renderHistory();
+    }
+
+    function headerValue(headers, name) {
+      if (!headers) return "";
+      const found = Object.entries(headers).find(([key]) => key.toLowerCase() === name);
+      return found ? found[1] : "";
+    }
+
+    function pretty(value) {
+      try { return JSON.stringify(JSON.parse(value), null, 2); }
+      catch { return value; }
+    }
+
+    function rememberCall(payload, status) {
+      historyItems.unshift({ method: payload.method, path: payload.path, status });
+      historyItems.splice(12);
+    }
+
+    function renderHistory() {
+      const host = document.getElementById("history");
+      if (!host) return;
+      host.replaceChildren();
+      for (const item of historyItems) {
+        host.append(el("span", { class: "badge" }, [text(`${item.status || "—"} ${item.method} ${item.path}`)]));
+      }
+    }
+
+    function formatBody() {
+      const body = document.getElementById("body");
+      const headers = document.getElementById("extraHeaders");
+      try {
+        if (body && body.value.trim()) body.value = JSON.stringify(JSON.parse(body.value), null, 2);
+        if (headers && headers.value.trim()) headers.value = JSON.stringify(JSON.parse(headers.value), null, 2);
+      } catch (error) {
+        showResponse({ status: 0, body: `JSON could not be formatted: ${error.message}`, headers: {} }, null);
+      }
+    }
+
+    async function copyCurl() {
+      try {
+        const payload = collect();
+        const lines = [
+          "curl.exe --request " + payload.method + " `",
+          "  --url " + psQuote(document.getElementById("pathPreview")?.textContent || payload.path) + " `"
+        ];
+        if (!payload.path.startsWith("http") && settingsFromForm().baseUrl) {
+          const origin = settingsFromForm().baseUrl.replace(/\/$/, "");
+          const query = new URLSearchParams(payload.query || {}).toString();
+          const url = origin + payload.path + (query ? `?${query}` : "");
+          lines[1] = "  --url " + psQuote(url) + " `";
+        } else if (payload.path.startsWith("http")) {
+          lines[1] = "  --url " + psQuote(payload.path) + " `";
+        }
+        for (const [key, value] of Object.entries(payload.headers || {})) {
+          lines.push("  --header " + psQuote(`${key}: ${value}`) + " `");
+        }
+        if (settingsFromForm().insecure) lines.push("  --insecure `");
+        if (payload.body) lines.push("  --data " + psQuote(payload.body));
+        else lines[lines.length - 1] = lines[lines.length - 1].replace(/ `$/, "");
+        await navigator.clipboard.writeText(lines.join("\n"));
+        document.getElementById("copyCurl").textContent = "Copied";
+        setTimeout(() => { document.getElementById("copyCurl").textContent = "Copy PowerShell curl"; }, 1200);
+      } catch (error) {
+        showResponse({ status: 0, body: error.message, headers: {} }, null);
+      }
+    }
+
+    document.getElementById("connection").addEventListener("submit", (event) => event.preventDefault());
+    document.getElementById("connection").addEventListener("input", saveSettings);
+    document.getElementById("connection").addEventListener("change", saveSettings);
+    document.getElementById("filter").addEventListener("input", renderNav);
+    document.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        const sendButton = document.getElementById("send");
+        if (sendButton) send();
+      }
+    });
+
+    fetch("/catalog.json")
+      .then((response) => response.json())
+      .then((data) => {
+        catalog = data;
+        loadSettings();
+        hydrateProviderKeys();
+        renderNav();
+        renderHome();
+      })
+      .catch((error) => {
+        document.getElementById("main").textContent = `Could not load the catalog: ${error.message}`;
+      });
+  </script>
+</body>
+</html>

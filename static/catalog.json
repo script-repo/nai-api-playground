@@ -1,0 +1,3031 @@
+{
+  "title": "Nutanix Enterprise AI",
+  "version": "2.8.0",
+  "source": "https://www.nutanix.dev/api_reference/apis/nai2.8.html",
+  "updated": "2026-08-20",
+  "groups": [
+    {
+      "id": "cluster",
+      "title": "Cluster",
+      "blurb": "Read-only checks that tell you the NAI instance is reachable.",
+      "operations": [
+        {
+          "id": "get-api-enterpriseai-v1-version",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/version",
+          "tag": "version",
+          "summary": "Get version",
+          "description": "Retrieve NAI version information.",
+          "auth": "none",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-users-me",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/users/me",
+          "tag": "users",
+          "summary": "Get current user",
+          "description": "Retrieve current user information and system status.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-cluster-health",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/cluster/health",
+          "tag": "cluster",
+          "summary": "Get cluster health",
+          "description": "Retrieve cluster health status.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-cluster-info",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/cluster/info",
+          "tag": "cluster",
+          "summary": "Get cluster info",
+          "description": "Retrieve Kubernetes cluster information.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-cluster-config",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/cluster/config",
+          "tag": "cluster",
+          "summary": "Get cluster config",
+          "description": "Retrieve cluster configuration settings.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "gateway-call",
+      "title": "Agent Gateway calls",
+      "blurb": "Inference through unified endpoints. Bearer API key.",
+      "operations": [
+        {
+          "id": "get-enterpriseai-gateway-v1-models",
+          "method": "GET",
+          "path": "/enterpriseai/gateway/v1/models",
+          "tag": "inference-models",
+          "summary": "List models",
+          "description": "Lists the currently available models and provides basic information, such as the owner and availability",
+          "auth": "bearer",
+          "source": "gateway-alias",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": "Documented Agent Gateway path for listing models behind the gateway."
+        },
+        {
+          "id": "post-enterpriseai-gateway-v1-chat-completions",
+          "method": "POST",
+          "path": "/enterpriseai/gateway/v1/chat/completions",
+          "tag": "chat",
+          "summary": "Create chat completion",
+          "description": "The chat completions API generates a model response from a list of messages comprising a conversation. This request creates a model response for the given chat conversation.",
+          "auth": "bearer",
+          "source": "gateway-alias",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "unified-endpoint-name",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hello from the Agent Gateway."
+              }
+            ],
+            "stream": false
+          },
+          "parameters": [],
+          "note": "Documented Agent Gateway path for a unified endpoint or KV-aware endpoint with text-to-text. The model field is the unified endpoint name. Audio stays on /enterpriseai/v1/."
+        },
+        {
+          "id": "post-enterpriseai-gateway-v1-embeddings",
+          "method": "POST",
+          "path": "/enterpriseai/gateway/v1/embeddings",
+          "tag": "embeddings",
+          "summary": "Create embeddings",
+          "description": "The embedding API generates a vector representation of a given input that can be easily consumed by machine learning models and algorithms. This request creates an embedding vector representing the input text.",
+          "auth": "bearer",
+          "source": "gateway-alias",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "unified-endpoint-name",
+            "input": "Nutanix Agent Gateway"
+          },
+          "parameters": [],
+          "note": "Documented Agent Gateway path for a unified endpoint serving an embedding model."
+        },
+        {
+          "id": "post-enterpriseai-gateway-v1-images-generations",
+          "method": "POST",
+          "path": "/enterpriseai/gateway/v1/images/generations",
+          "tag": "images",
+          "summary": "Generate images",
+          "description": "The image generation API generates images from a text prompt.",
+          "auth": "bearer",
+          "source": "gateway-alias",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "unified-endpoint-name",
+            "prompt": "A quiet server room at night, soft green light",
+            "n": 1,
+            "size": "1024x1024"
+          },
+          "parameters": [],
+          "note": "Gateway form of image generation. The 2.8 base-path rule covers every unified endpoint except audio. apiSpec openaiImageGenerationsV1APISpec selects this contract. Confirm the Access URL on the endpoint page."
+        },
+        {
+          "id": "post-enterpriseai-gateway-v1-messages",
+          "method": "POST",
+          "path": "/enterpriseai/gateway/v1/messages",
+          "tag": "messages",
+          "summary": "Create Anthropic Messages Request",
+          "description": "Generates the next assistant message from a conversation. This API is only supported for Unified Endpoints via Gateway. Please refer to the Anthropic Messages API Spec for more information. [https://platform.claude.com/docs/en/api/go/beta/messages/create](https://platform.claude.com/docs/en/api/go/beta/messages/create)",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "unified-endpoint-name",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hello from the Agent Gateway."
+              }
+            ]
+          },
+          "parameters": [],
+          "note": "Anthropic Messages is served only through the Agent Gateway. model is the unified endpoint name. The published schema marks model as the only required field; max_tokens and messages match the Anthropic Messages API the NAI docs point at."
+        },
+        {
+          "id": "post-enterpriseai-v2-rerank",
+          "method": "POST",
+          "path": "/enterpriseai/v2/rerank",
+          "tag": "rerank",
+          "summary": "Rerank documents with v2",
+          "description": "Rerank documents.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "unified-endpoint-name",
+            "query": "What does Agent Gateway govern?",
+            "documents": [
+              {
+                "text": "Agent Gateway is the front door for models and MCP tools."
+              },
+              {
+                "text": "Private inference runs models inside the NAI cluster."
+              }
+            ],
+            "top_n": 2,
+            "return_documents": true
+          },
+          "parameters": [],
+          "note": "Rerank v2 exists so unified endpoints can serve Cohere-compatible rerank (apiSpec cohereRerankV2APISpec). The published path is /enterpriseai/v2/rerank. The gateway examples do not list a separate rerank URL."
+        }
+      ]
+    },
+    {
+      "id": "gateway-admin",
+      "title": "Agent Gateway admin",
+      "blurb": "Unified endpoints, providers, MCP servers, connectors, and keys. Basic auth.",
+      "operations": [
+        {
+          "id": "post-api-enterpriseai-v1-apikeys",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/apikeys",
+          "tag": "apikeys",
+          "summary": "Create API Key",
+          "description": "Create a new API key for authentication.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "gateway-key",
+            "endpoints": [],
+            "unifiedEndpoints": [
+              "unified-endpoint-id"
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-apikeys-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/apikeys/search",
+          "tag": "apikeys",
+          "summary": "Search API key",
+          "description": "Search and filter API keys.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-apikeys-apikey-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/apikeys/{apikey_id}",
+          "tag": "apikeys",
+          "summary": "Delete API Key",
+          "description": "Delete an API key by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "apikey_id",
+              "in": "path",
+              "required": true,
+              "description": "apikey id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-apikeys-apikey-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/apikeys/{apikey_id}",
+          "tag": "apikeys",
+          "summary": "Update API Key",
+          "description": "Update API key status and associated endpoint IDs.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "endpoints": [
+              "string"
+            ],
+            "status": "string",
+            "unifiedEndpoints": [
+              "string"
+            ]
+          },
+          "parameters": [
+            {
+              "name": "apikey_id",
+              "in": "path",
+              "required": true,
+              "description": "apikey id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-credentials",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/credentials",
+          "tag": "credentials",
+          "summary": "Create third party credential",
+          "description": "Create a new third party credential.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "openai-lab",
+            "type": "openai",
+            "data": {
+              "openai": {
+                "apiKey": "replace-me",
+                "hostname": "api.openai.com",
+                "port": 443
+              }
+            }
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-credentials-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/credentials/search",
+          "tag": "credentials",
+          "summary": "Search third party credentials",
+          "description": "Search and filter third party credentials.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-credentials-validate",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/credentials/validate",
+          "tag": "credentials",
+          "summary": "validateCredential",
+          "description": "validate credential object",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-credentials-credential-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/credentials/{credential_id}",
+          "tag": "credentials",
+          "summary": "Delete third party credential by ID",
+          "description": "Delete a third party credential by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "credential_id",
+              "in": "path",
+              "required": true,
+              "description": "credential id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-credentials-credential-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/credentials/{credential_id}",
+          "tag": "credentials",
+          "summary": "Get third party credential by ID",
+          "description": "Retrieve a specific third party credential by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "credential_id",
+              "in": "path",
+              "required": true,
+              "description": "credential id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-credentials-credential-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/credentials/{credential_id}",
+          "tag": "credentials",
+          "summary": "Update third party credential",
+          "description": "Update an existing third party credential.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "data": {
+              "anthropic": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "aws": {
+                "accessKeyID": "string",
+                "hostname": "string",
+                "port": 65535,
+                "region": "string",
+                "secretAccessKey": "string"
+              },
+              "azure": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "cohere": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "gcp": {
+                "hostname": "string",
+                "port": 65535,
+                "projectName": "string",
+                "region": "string",
+                "serviceAccountJson": {
+                  "property1": "string",
+                  "property2": "string"
+                }
+              },
+              "googleGemini": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "hf": {
+                "token": "string"
+              },
+              "mcpImageRegistry": {
+                "password": "string",
+                "registryUrl": "string",
+                "username": "string"
+              },
+              "mcpServer": {
+                "apiKey": "string"
+              },
+              "mistral": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "nai": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "ngc": {
+                "apiKey": "string"
+              },
+              "openai": {
+                "apiKey": "string",
+                "hostname": "string",
+                "port": 65535
+              },
+              "openaiCompatible": {
+                "apiKey": "string",
+                "basePath": "string",
+                "hostname": "string",
+                "port": 65535
+              }
+            },
+            "name": "string"
+          },
+          "parameters": [
+            {
+              "name": "credential_id",
+              "in": "path",
+              "required": true,
+              "description": "credential id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcp-connectors",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcp/connectors",
+          "tag": "mcp-connectors",
+          "summary": "Create MCP Connector",
+          "description": "Create a new MCP connector.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "agent-tools",
+            "mcpKeys": [],
+            "mcpServers": [
+              {
+                "serverId": "mcp-server-id",
+                "allowedTools": [
+                  "tool_name"
+                ]
+              }
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcp-connectors-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcp/connectors/search",
+          "tag": "mcp-connectors",
+          "summary": "Search MCP Connectors",
+          "description": "Search and filter MCP connectors.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcp-connectors-validate",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcp/connectors/validate",
+          "tag": "mcp-connectors",
+          "summary": "Validate MCP Connector",
+          "description": "Validate an MCP connector name.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_name",
+              "in": "query",
+              "required": true,
+              "description": "MCP connector name",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-mcp-connectors-mcp-connector-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}",
+          "tag": "mcp-connectors",
+          "summary": "Delete MCP Connector",
+          "description": "Delete an MCP connector by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP connector id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-connectors-mcp-connector-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}",
+          "tag": "mcp-connectors",
+          "summary": "Get MCP connector by ID",
+          "description": "Retrieve a specific MCP connector by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP connector id",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-mcp-connectors-mcp-connector-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}",
+          "tag": "mcp-connectors",
+          "summary": "Update MCP connector",
+          "description": "Update an existing MCP connector.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "mcpKeys": [
+              "string"
+            ],
+            "mcpServers": [
+              {
+                "allowedTools": [
+                  "string"
+                ],
+                "serverId": "string"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP connector id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-connectors-mcp-connector-id-mcpkeys",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}/mcpkeys",
+          "tag": "mcp-connectors",
+          "summary": "List MCP keys",
+          "description": "List MCP keys for a specific connector.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "connector id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-connectors-mcp-connector-id-mcpservers",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}/mcpservers",
+          "tag": "mcp-connectors",
+          "summary": "List MCP servers",
+          "description": "List MCP servers for a specific connector.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "connector id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-connectors-mcp-connector-id-servers-mcp-server-id-tools",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/connectors/{mcp_connector_id}/servers/{mcp_server_id}/tools",
+          "tag": "mcp-connectors",
+          "summary": "List MCP Server Tools",
+          "description": "List available and allowed tools for a server within a connector context.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_connector_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP connector id",
+              "type": "string"
+            },
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP server id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcp-servers",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcp/servers/",
+          "tag": "mcp-servers",
+          "summary": "Create MCP Server",
+          "description": "create a new MCP server",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "remote-tools",
+            "serverType": "remote",
+            "remoteMcpServer": {
+              "url": "https://mcp.example.com/mcp"
+            }
+          },
+          "parameters": [],
+          "note": "serverType remote needs remoteMcpServer.url. serverType local needs localMcpServer with packageType docker, packageName, port, instances, cpuMilliCores, and memoryInMi."
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcp-servers-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcp/servers/search",
+          "tag": "mcp-servers",
+          "summary": "Search MCP Server",
+          "description": "Search MCP Servers.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-mcp-servers-mcp-server-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/mcp/servers/{mcp_server_id}",
+          "tag": "mcp-servers",
+          "summary": "Delete MCP Server",
+          "description": "Delete a MCP Server.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP Server id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-servers-mcp-server-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/servers/{mcp_server_id}",
+          "tag": "mcp-servers",
+          "summary": "Get MCP Server by ID",
+          "description": "Retrieve a specific MCP server by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP server id",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-mcp-servers-mcp-server-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/mcp/servers/{mcp_server_id}",
+          "tag": "mcp-servers",
+          "summary": "Update MCP server",
+          "description": "update a MCP server",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "localMcpServer": {
+              "args": [
+                "string"
+              ],
+              "cpuMilliCores": 0,
+              "env": {
+                "property1": "string",
+                "property2": "string"
+              },
+              "instances": 1,
+              "memoryInMi": 0,
+              "packageName": "string",
+              "packageType": "docker",
+              "port": 1,
+              "registryCredentialId": "string"
+            }
+          },
+          "parameters": [
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP server id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-servers-mcp-server-id-instances",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/servers/{mcp_server_id}/instances",
+          "tag": "mcp-servers",
+          "summary": "List instances of a Local MCP Server",
+          "description": "list pod instances backing a local MCP server. Returns an empty list for remote MCP servers.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP server id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-mcp-servers-mcp-server-id-tools",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/mcp/servers/{mcp_server_id}/tools",
+          "tag": "mcp-servers",
+          "summary": "List tools in an MCP Server.",
+          "description": "List all available tools on an MCP server.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcp_server_id",
+              "in": "path",
+              "required": true,
+              "description": "MCP server id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcpkeys",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcpkeys",
+          "tag": "mcpkeys",
+          "summary": "Create an MCP key",
+          "description": "Create a new MCP key.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "agent-key",
+            "connectors": [
+              "mcp-connector-id"
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-mcpkeys-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/mcpkeys/search",
+          "tag": "mcpkeys",
+          "summary": "Search MCP Key",
+          "description": "Search and filter MCP keys.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-mcpkeys-mcpkey-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/mcpkeys/{mcpkey_id}",
+          "tag": "mcpkeys",
+          "summary": "Delete",
+          "description": "Delete MCP key with id.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "mcpkey_id",
+              "in": "path",
+              "required": true,
+              "description": "mcpkey id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-mcpkeys-mcpkey-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/mcpkeys/{mcpkey_id}",
+          "tag": "mcpkeys",
+          "summary": "Update MCP Key",
+          "description": "Update MCP key with status and connector id list.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "connectors": [
+              "string"
+            ],
+            "status": "string"
+          },
+          "parameters": [
+            {
+              "name": "mcpkey_id",
+              "in": "path",
+              "required": true,
+              "description": "mcpkey id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-providers",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/providers",
+          "tag": "providers",
+          "summary": "Create Provider",
+          "description": "Create a new provider.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "anthropic-lab",
+            "type": "anthropic",
+            "credentialId": "credential-id"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-providers-requirements",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/providers/requirements",
+          "tag": "providers",
+          "summary": "Get Requirements",
+          "description": "Get requirements for a provider.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "ingressApiSpec": "awsBedrockConverseV1APISpec",
+            "type": "anthropic"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-providers-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/providers/search",
+          "tag": "providers",
+          "summary": "Search Providers",
+          "description": "Search and filter providers.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-providers-provider-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/providers/{provider_id}",
+          "tag": "providers",
+          "summary": "Delete provider",
+          "description": "Delete a provider by id.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "provider_id",
+              "in": "path",
+              "required": true,
+              "description": "provider id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-providers-provider-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/providers/{provider_id}",
+          "tag": "providers",
+          "summary": "Get Provider by ID",
+          "description": "Get a provider by id.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "provider_id",
+              "in": "path",
+              "required": true,
+              "description": "provider id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-providers-provider-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/providers/{provider_id}",
+          "tag": "providers",
+          "summary": "Update Provider",
+          "description": "Update an provider by id.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "credentialId": "string"
+          },
+          "parameters": [
+            {
+              "name": "provider_id",
+              "in": "path",
+              "required": true,
+              "description": "provider id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-unified-endpoints",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/unified-endpoints",
+          "tag": "unified-endpoints",
+          "summary": "Create unified endpoint",
+          "description": "Create a new unified endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "chat-gateway",
+            "mode": "loadbalancer",
+            "apiSpec": "openaiChatV1APISpec",
+            "isRetryEnabled": true,
+            "apiKeys": [],
+            "targetEndpoints": [
+              {
+                "endpointType": "internal",
+                "internalEndpointId": "endpoint-id",
+                "weight": 100
+              }
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-unified-endpoints-apikeys-unified-endpoint-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/unified-endpoints/apikeys/{unified_endpoint_id}",
+          "tag": "unified-endpoints",
+          "summary": "List API keys",
+          "description": "List API keys for a unified endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-unified-endpoints-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/unified-endpoints/search",
+          "tag": "unified-endpoints",
+          "summary": "Search unified endpoints.",
+          "description": "Search and filter unified endpoints.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-unified-endpoints-unified-endpoint-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/unified-endpoints/{unified_endpoint_id}",
+          "tag": "unified-endpoints",
+          "summary": "Delete unified endpoints",
+          "description": "Delete a unified endpoint by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-unified-endpoints-unified-endpoint-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/unified-endpoints/{unified_endpoint_id}",
+          "tag": "unified-endpoints",
+          "summary": "Get unified endpoint by ID",
+          "description": "Retrieve a specific unified endpoint by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "put-api-enterpriseai-v1-unified-endpoints-unified-endpoint-id",
+          "method": "PUT",
+          "path": "/api/enterpriseai/v1/unified-endpoints/{unified_endpoint_id}",
+          "tag": "unified-endpoints",
+          "summary": "Update unified endpoint",
+          "description": "Update an existing unified endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "mode": "fallback",
+            "apiSpec": "openaiChatV1APISpec",
+            "isRetryEnabled": true,
+            "targetEndpoints": [
+              {
+                "endpointType": "provider",
+                "providerId": "provider-id",
+                "providerModelName": "claude-sonnet-4-5",
+                "priority": 1
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-unified-endpoints-unified-endpoint-id-ratelimit",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/unified-endpoints/{unified_endpoint_id}/ratelimit",
+          "tag": "unified-endpoints",
+          "summary": "List rate limits",
+          "description": "List rate limit configurations for an unified endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-unified-endpoints-unified-endpoint-id-ratelimit",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/unified-endpoints/{unified_endpoint_id}/ratelimit",
+          "tag": "unified-endpoints",
+          "summary": "Update rate limit",
+          "description": "Update rate limit configuration on a unified endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "global": {
+              "rateLimitConfig": {
+                "cost": "total_tokens",
+                "durationUnit": "Day",
+                "value": 100000
+              }
+            },
+            "header": {
+              "name": "x-user-id",
+              "rateLimitConfig": {
+                "cost": "total_tokens",
+                "durationUnit": "Day",
+                "value": 20000
+              },
+              "valueOverrides": []
+            }
+          },
+          "parameters": [
+            {
+              "name": "unified_endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "unified endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": "Header rate limits identify an end user without issuing each person an API key. durationUnit values are Second, Minute, Hour, Day, Month, Year. cost values are request, input_tokens, output_tokens, total_tokens."
+        }
+      ]
+    },
+    {
+      "id": "inference",
+      "title": "Direct inference",
+      "blurb": "OpenAI-compatible calls on a single endpoint. Bearer API key.",
+      "operations": [
+        {
+          "id": "post-enterpriseai-v1-audio-transcriptions",
+          "method": "POST",
+          "path": "/enterpriseai/v1/audio/transcriptions",
+          "tag": "audio",
+          "summary": "Create transcription",
+          "description": "The audio transcription API transcribes audio into text.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "multipart",
+          "contentType": "multipart/form-data",
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-enterpriseai-v1-audio-translations",
+          "method": "POST",
+          "path": "/enterpriseai/v1/audio/translations",
+          "tag": "audio",
+          "summary": "Create translation",
+          "description": "The audio translation API translates audio into text.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "multipart",
+          "contentType": "multipart/form-data",
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-enterpriseai-v1-chat-completions",
+          "method": "POST",
+          "path": "/enterpriseai/v1/chat/completions",
+          "tag": "chat",
+          "summary": "Create chat completion",
+          "description": "The chat completions API generates a model response from a list of messages comprising a conversation. This request creates a model response for the given chat conversation.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "model-id",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hello from the NAI playground."
+              }
+            ],
+            "stream": false
+          },
+          "parameters": [],
+          "note": "Direct inference on an endpoint API key. model is the id returned by List models. Use the gateway path when the key is bound to a unified endpoint."
+        },
+        {
+          "id": "post-enterpriseai-v1-embeddings",
+          "method": "POST",
+          "path": "/enterpriseai/v1/embeddings",
+          "tag": "embeddings",
+          "summary": "Create embeddings",
+          "description": "The embedding API generates a vector representation of a given input that can be easily consumed by machine learning models and algorithms. This request creates an embedding vector representing the input text.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "model-id",
+            "input": "Nutanix Enterprise AI"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-enterpriseai-v1-images-generations",
+          "method": "POST",
+          "path": "/enterpriseai/v1/images/generations",
+          "tag": "images",
+          "summary": "Generate images",
+          "description": "The image generation API generates images from a text prompt.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "model-id",
+            "prompt": "A quiet server room at night, soft green light",
+            "n": 1,
+            "size": "1024x1024"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-enterpriseai-v1-models",
+          "method": "GET",
+          "path": "/enterpriseai/v1/models",
+          "tag": "inference-models",
+          "summary": "List models",
+          "description": "Lists the currently available models and provides basic information, such as the owner and availability",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-enterpriseai-v1-rerank",
+          "method": "POST",
+          "path": "/enterpriseai/v1/rerank",
+          "tag": "rerank",
+          "summary": "Rerank documents",
+          "description": "Rerank documents by relevance to query.",
+          "auth": "bearer",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "model": "model-id",
+            "query": "What does Agent Gateway govern?",
+            "documents": [
+              {
+                "text": "Agent Gateway is the front door for models and MCP tools."
+              },
+              {
+                "text": "Private inference runs models inside the NAI cluster."
+              }
+            ],
+            "top_n": 2
+          },
+          "parameters": [],
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "models",
+      "title": "Models and endpoints",
+      "blurb": "Catalog, model instances, classic endpoints, batches, and fine-tuning.",
+      "operations": [
+        {
+          "id": "get-api-enterpriseai-v1-batches",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/batches",
+          "tag": "batches",
+          "summary": "List batches",
+          "description": "List batches",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "after",
+              "in": "query",
+              "required": false,
+              "description": "Pagination parameters",
+              "type": "string"
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "required": false,
+              "description": "limit",
+              "type": "string"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "required": false,
+              "description": "offset",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-batches",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/batches",
+          "tag": "batches",
+          "summary": "Create batch",
+          "description": "Create a new batch.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "completion_window": "24h",
+            "endpoint": "/v1/chat/completions",
+            "endpoint_id": "string",
+            "input_file_id": "string",
+            "metadata": {
+              "property1": {},
+              "property2": {}
+            },
+            "name": "string",
+            "output_storage": {
+              "nfs": {
+                "dataPath": "string",
+                "serverIp": "string",
+                "sharePath": "string"
+              }
+            }
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-batches-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/batches/search",
+          "tag": "batches",
+          "summary": "Search batches",
+          "description": "Search batches",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-batches-batch-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/batches/{batch_id}",
+          "tag": "batches",
+          "summary": "Delete batch",
+          "description": "Delete a batch by ID",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "batch_id",
+              "in": "path",
+              "required": true,
+              "description": "batch ID",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-batches-batch-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/batches/{batch_id}",
+          "tag": "batches",
+          "summary": "Get batch",
+          "description": "Get a batch by ID",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "batch_id",
+              "in": "path",
+              "required": true,
+              "description": "batch ID",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-batches-batch-id-cancel",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/batches/{batch_id}/cancel",
+          "tag": "batches",
+          "summary": "Cancel batch",
+          "description": "Cancel a batch by ID",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "batch_id",
+              "in": "path",
+              "required": true,
+              "description": "batch ID",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-catalogs",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/catalogs",
+          "tag": "catalogs",
+          "summary": "Update catalogs",
+          "description": "Update one or more catalog entries.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-catalogs-requirements",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/catalogs/requirements",
+          "tag": "catalogs",
+          "summary": "Get Model requirement",
+          "description": "Get resource requirements for a model.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "acceleratorMemory": null,
+            "acceleratorProduct": "string",
+            "engine": "vllm",
+            "modelName": "string",
+            "platform": "nvidia-gpu-passthrough"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-catalogs-requirements-finetune",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/catalogs/requirements/finetune",
+          "tag": "catalogs",
+          "summary": "finetune requirements",
+          "description": "get resource requirements for finetuning a model",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "acceleratorMemory": null,
+            "acceleratorProduct": "string",
+            "config": {
+              "additionalParams": {
+                "lora": {
+                  "alpha": 1,
+                  "rank": 1
+                }
+              },
+              "hyperparameters": {
+                "batchSize": 1,
+                "epochs": 1,
+                "gradientAccumulationSteps": 1,
+                "learningRate": null,
+                "maxSequenceLength": 1,
+                "testSplit": null
+              },
+              "type": "supervised-lora"
+            },
+            "modelName": "string",
+            "platform": "nvidia-gpu-passthrough"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-catalogs-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/catalogs/search",
+          "tag": "catalogs",
+          "summary": "Search for models",
+          "description": "Search and filter models.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-catalogs-catalog-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/catalogs/{catalog_id}",
+          "tag": "catalogs",
+          "summary": "Get Catalog by ID",
+          "description": "Retrieve a catalog entry by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "catalog_id",
+              "in": "path",
+              "required": true,
+              "description": "catalog id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-data-sources",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/data-sources",
+          "tag": "data-sources",
+          "summary": "Create datasource",
+          "description": "Create a new data source.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "name": "string",
+            "purpose": "finetune",
+            "sizeInMB": 0,
+            "storageProvider": {
+              "huggingFaceHub": {
+                "repoId": "string",
+                "repoVersion": "string"
+              },
+              "nfs": {
+                "dataPath": "string",
+                "serverIp": "string",
+                "sharePath": "string"
+              }
+            }
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-data-sources-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/data-sources/search",
+          "tag": "data-sources",
+          "summary": "Search",
+          "description": "Search and filter data sources.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-data-sources-data-source-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/data-sources/{data_source_id}",
+          "tag": "data-sources",
+          "summary": "Delete data source.",
+          "description": "Delete a data source by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "data_source_id",
+              "in": "path",
+              "required": true,
+              "description": "data source id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-data-sources-data-source-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/data-sources/{data_source_id}",
+          "tag": "data-sources",
+          "summary": "Get a specific data source by ID",
+          "description": "Retrieve a specific data source by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "data_source_id",
+              "in": "path",
+              "required": true,
+              "description": "data source ID",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-endpoints",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/endpoints",
+          "tag": "endpoints",
+          "summary": "Create",
+          "description": "Create a new endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "acceleratorCount": 0,
+            "acceleratorProduct": "string",
+            "advancedConfig": {
+              "nimArgs": {
+                "customEnvVars": {
+                  "property1": "string",
+                  "property2": "string"
+                }
+              },
+              "tgiArgs": {
+                "maxNumTokens": 0
+              },
+              "vllmArgs": {
+                "customArgs": {
+                  "property1": "string",
+                  "property2": "string"
+                },
+                "customEnvVars": {
+                  "property1": "string",
+                  "property2": "string"
+                },
+                "maxNumTokens": 0,
+                "speculativeConfig": {
+                  "method": null,
+                  "ngram": null
+                }
+              }
+            },
+            "apiKeys": [
+              "string"
+            ],
+            "cpu": 0,
+            "description": "string",
+            "enableKVAwareRouting": true,
+            "engine": "vllm",
+            "engineImageOverride": {
+              "name": "string",
+              "tag": "string"
+            },
+            "engineSource": "nai",
+            "kvOffloadingConfig": {
+              "offloadingTierSpec": [
+                {
+                  "memoryInGi": 0,
+                  "tier": null
+                }
+              ]
+            },
+            "maxInstances": 1,
+            "memoryInGi": 0,
+            "minInstances": 1,
+            "modelId": "string",
+            "name": "string",
+            "nodeCount": 0,
+            "platform": "nvidia-gpu-passthrough",
+            "purpose": "real-time"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-endpoints-apikeys-endpoint-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/endpoints/apikeys/{endpoint_id}",
+          "tag": "endpoints",
+          "summary": "List API keys",
+          "description": "List API keys associated with an endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-endpoints-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/endpoints/search",
+          "tag": "endpoints",
+          "summary": "Search endpoints",
+          "description": "Search and filter endpoints.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-endpoints-state-endpoint-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/endpoints/state/{endpoint_id}",
+          "tag": "endpoints",
+          "summary": "Update state of an endpoint",
+          "description": "Update the state of an endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "state": "hibernate"
+          },
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-endpoints-validate",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/endpoints/validate",
+          "tag": "endpoints",
+          "summary": "Validate endpoint name",
+          "description": "Validate endpoint name availability.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "endpoint_name",
+              "in": "query",
+              "required": true,
+              "description": "endpoint name",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-endpoints-endpoint-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/endpoints/{endpoint_id}",
+          "tag": "endpoints",
+          "summary": "Delete an endpoint",
+          "description": "Delete an endpoint by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-endpoints-endpoint-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/endpoints/{endpoint_id}",
+          "tag": "endpoints",
+          "summary": "Get endpoint by ID",
+          "description": "Retrieve a specific endpoint by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-endpoints-endpoint-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/endpoints/{endpoint_id}",
+          "tag": "endpoints",
+          "summary": "Update endpoint",
+          "description": "Update an existing endpoint.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "advancedConfig": {
+              "customArgs": {
+                "property1": "string",
+                "property2": "string"
+              },
+              "customEnvVars": {
+                "property1": "string",
+                "property2": "string"
+              }
+            },
+            "description": "string",
+            "maxInstances": 1,
+            "minInstances": 1
+          },
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-endpoints-endpoint-id-instances",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/endpoints/{endpoint_id}/instances",
+          "tag": "endpoints",
+          "summary": "List instances of an endpoint",
+          "description": "List instances for a specific endpoint ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "endpoint_id",
+              "in": "path",
+              "required": true,
+              "description": "endpoint id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-finetune-jobs",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/finetune-jobs",
+          "tag": "finetune-jobs",
+          "summary": "Create fine-tuning job",
+          "description": "Create a new fine-tuning job.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "baseModelID": "string",
+            "dataSourceID": "string",
+            "methodConfig": {
+              "additionalParams": {
+                "lora": {
+                  "alpha": 1,
+                  "rank": 1
+                }
+              },
+              "hyperparameters": {
+                "batchSize": 1,
+                "epochs": 1,
+                "gradientAccumulationSteps": 1,
+                "learningRate": null,
+                "maxSequenceLength": 1,
+                "testSplit": null
+              },
+              "type": "supervised-lora"
+            },
+            "name": "string",
+            "outputStorage": {
+              "nfs": {
+                "dataPath": "string",
+                "serverIp": "string",
+                "sharePath": "string"
+              }
+            },
+            "resources": {
+              "acceleratorCount": 0,
+              "acceleratorProduct": "string",
+              "cpu": 0,
+              "memoryInGi": 0
+            },
+            "seed": 0
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-finetune-jobs-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/finetune-jobs/search",
+          "tag": "finetune-jobs",
+          "summary": "Search fine-tuning jobs",
+          "description": "Search and filter fine-tuning jobs.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-finetune-jobs-finetune-job-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/finetune-jobs/{finetune_job_id}",
+          "tag": "finetune-jobs",
+          "summary": "Delete fine-tuning job by ID",
+          "description": "Delete a fine-tuning job by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "finetune_job_id",
+              "in": "path",
+              "required": true,
+              "description": "finetune job id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-finetune-jobs-finetune-job-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/finetune-jobs/{finetune_job_id}",
+          "tag": "finetune-jobs",
+          "summary": "Get fine-tuning job by ID",
+          "description": "Retrieve a specific fine-tuning job by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "finetune_job_id",
+              "in": "path",
+              "required": true,
+              "description": "finetune job ID",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "patch-api-enterpriseai-v1-finetune-jobs-finetune-job-id",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/finetune-jobs/{finetune_job_id}",
+          "tag": "finetune-jobs",
+          "summary": "Update an existing fine-tuning job",
+          "description": "update an existing finetune job",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "action": "pause"
+          },
+          "parameters": [
+            {
+              "name": "finetune_job_id",
+              "in": "path",
+              "required": true,
+              "description": "finetune job ID",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-models",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/models",
+          "tag": "models",
+          "summary": "Create model instance",
+          "description": "Create a new instance of a model.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "modelProvider": {
+              "catalogId": "string",
+              "customModelDetails": {
+                "developer": "string",
+                "modelCapabilities": [
+                  "string"
+                ],
+                "modelSizeInGB": 0
+              }
+            },
+            "name": "string",
+            "sourceFormat": "hf",
+            "storageProvider": {
+              "huggingFaceHub": {
+                "repoId": "string",
+                "repoVersion": "string"
+              },
+              "nfs": {
+                "dataPath": "string",
+                "serverIp": "string",
+                "sharePath": "string"
+              },
+              "nim": {
+                "nimUrl": {
+                  "name": "string",
+                  "tag": "string"
+                }
+              },
+              "s3": {
+                "accessKey": "string",
+                "bucket": "string",
+                "dataPath": "string",
+                "endpoint": "string",
+                "secretKey": "string"
+              }
+            }
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-models-capabilities",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/models/capabilities",
+          "tag": "models",
+          "summary": "Get Capabilities of a model",
+          "description": "Get capabilities.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-models-search",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/models/search",
+          "tag": "models",
+          "summary": "Search model instances",
+          "description": "Search and filter model instances.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "delete-api-enterpriseai-v1-models-model-id",
+          "method": "DELETE",
+          "path": "/api/enterpriseai/v1/models/{model_id}",
+          "tag": "models",
+          "summary": "Delete  a model instance",
+          "description": "Delete a model instance by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "model_id",
+              "in": "path",
+              "required": true,
+              "description": "model id",
+              "type": "string"
+            },
+            {
+              "name": "force",
+              "in": "query",
+              "required": false,
+              "description": "force delete",
+              "type": "boolean"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-models-model-id",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/models/{model_id}",
+          "tag": "models",
+          "summary": "Get Model instance by ID",
+          "description": "Retrieve a specific model by its ID.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "model_id",
+              "in": "path",
+              "required": true,
+              "description": "model id",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "observe",
+      "title": "Observe",
+      "blurb": "Logs, metrics, audit, and security scans.",
+      "operations": [
+        {
+          "id": "post-api-enterpriseai-v1-auditlogs",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/auditlogs",
+          "tag": "auditlogs",
+          "summary": "Search Audit Logs",
+          "description": "Search and retrieve audit log entries.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "filters": [],
+            "limit": 20,
+            "offset": 0,
+            "sort": []
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-logs",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/logs",
+          "tag": "logs",
+          "summary": "Get logs",
+          "description": "Retrieve logs from pod instances.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "entityType",
+              "in": "query",
+              "required": true,
+              "description": "Entity type (endpoint only). Note: In response filenames, this will be lowercase.",
+              "type": "string"
+            },
+            {
+              "name": "entityId",
+              "in": "query",
+              "required": true,
+              "description": "Entity ID",
+              "type": "string"
+            },
+            {
+              "name": "instance",
+              "in": "query",
+              "required": true,
+              "description": "Instance name",
+              "type": "string"
+            },
+            {
+              "name": "tailLines",
+              "in": "query",
+              "required": false,
+              "description": "Number of lines to tail from the end of the logs",
+              "type": "integer"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-logs-download",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/logs/download",
+          "tag": "logs",
+          "summary": "download logs",
+          "description": "Download logs file from pod instances.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "entityType",
+              "in": "query",
+              "required": true,
+              "description": "Entity type (endpoint, model, data-source, or finetune-job).",
+              "type": "string"
+            },
+            {
+              "name": "entityId",
+              "in": "query",
+              "required": true,
+              "description": "Entity ID",
+              "type": "string"
+            },
+            {
+              "name": "instance",
+              "in": "query",
+              "required": false,
+              "description": "Instance name (required for endpoint, not supported for model, data-source, and finetune-job)",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-metrics-health",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/metrics/health",
+          "tag": "metrics",
+          "summary": "Checks health of metrics",
+          "description": "Checks health of metrics deployment.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-metrics-query",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/metrics/query",
+          "tag": "metrics",
+          "summary": "Query Metrics",
+          "description": "Get Metrics",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "extraMetricParams": {
+              "downsamplingInterval": 0,
+              "end": 0,
+              "filters": {
+                "property1": [
+                  "string"
+                ],
+                "property2": [
+                  "string"
+                ]
+              },
+              "groupBy": [
+                "endpointName"
+              ],
+              "limit": 0,
+              "sortOrder": "ASC",
+              "start": 0
+            },
+            "metricName": "requestLatencyAverage",
+            "outputType": "timeseries"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-scans",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/scans",
+          "tag": "scans",
+          "summary": "Initiate scan",
+          "description": "Initiate a security scan for an entity",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "endpoint": {
+              "apiKey": "string",
+              "baseUrl": "string"
+            },
+            "entityId": "string",
+            "entityType": "model"
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-scans-summary",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/scans/summary",
+          "tag": "scans",
+          "summary": "List security scan summary",
+          "description": "List summary of security scans for all models and endpoints",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-scans-scan-id-abort",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/scans/{scan_id}/abort",
+          "tag": "scans",
+          "summary": "Abort scan",
+          "description": "Abort a security scan by ID",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "scan_id",
+              "in": "path",
+              "required": true,
+              "description": "security scan id",
+              "type": "string"
+            }
+          ],
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "platform",
+      "title": "Platform",
+      "blurb": "Licenses and the remaining cluster configuration calls.",
+      "operations": [
+        {
+          "id": "patch-api-enterpriseai-v1-cluster-config",
+          "method": "PATCH",
+          "path": "/api/enterpriseai/v1/cluster/config",
+          "tag": "cluster",
+          "summary": "Update cluster configuration",
+          "description": "Update cluster configuration settings.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "eula": {
+              "accepted": true,
+              "company": "string",
+              "name": "string"
+            },
+            "hfUrlImport": {
+              "enabled": true
+            },
+            "manualUpload": {
+              "enabled": true
+            },
+            "proxySettings": {
+              "name": "string",
+              "password": "string",
+              "port": 1,
+              "protocols": [
+                "string"
+              ],
+              "proxyAddress": "string",
+              "username": "string"
+            },
+            "pulse": {
+              "accepted": true
+            },
+            "rsyslogServer": {
+              "logConfigs": [
+                {
+                  "logSeverity": 0,
+                  "logType": "audit"
+                }
+              ],
+              "name": "string",
+              "port": 1,
+              "protocol": "string",
+              "serverAddress": "string"
+            },
+            "securitySettings": {
+              "clientId": "string",
+              "clientSecret": "string",
+              "hfSecurityGroupUuid": "string",
+              "networkChannelUuid": "string",
+              "tsgId": "string"
+            }
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "get-api-enterpriseai-v1-licenses",
+          "method": "GET",
+          "path": "/api/enterpriseai/v1/licenses",
+          "tag": "licenses",
+          "summary": "List licenses",
+          "description": "List all licenses.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "none",
+          "contentType": null,
+          "example": null,
+          "parameters": [
+            {
+              "name": "expand",
+              "in": "query",
+              "required": false,
+              "description": "query param to denote what all extra fields to fetch",
+              "type": "array"
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": "put-api-enterpriseai-v1-licenses",
+          "method": "PUT",
+          "path": "/api/enterpriseai/v1/licenses",
+          "tag": "licenses",
+          "summary": "Add license.",
+          "description": "Add a new license.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "licenses": [
+              {
+                "licenseClusterUuid": "string",
+                "licenseKey": "string",
+                "meterType": "VCPU"
+              }
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        },
+        {
+          "id": "post-api-enterpriseai-v1-licenses-validate",
+          "method": "POST",
+          "path": "/api/enterpriseai/v1/licenses/validate",
+          "tag": "licenses",
+          "summary": "Validate license key",
+          "description": "Validate license key.",
+          "auth": "basic",
+          "source": "spec",
+          "bodyKind": "json",
+          "contentType": "application/json",
+          "example": {
+            "licenses": [
+              {
+                "licenseClusterUuid": "string",
+                "licenseKey": "string",
+                "meterType": "VCPU"
+              }
+            ]
+          },
+          "parameters": [],
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "id": "mcp-tools-list",
+      "title": "MCP tools/list",
+      "method": "POST",
+      "path": "",
+      "auth": "bearer",
+      "headers": {
+        "Accept": "application/json, text/event-stream",
+        "MCP-Protocol-Version": "2025-06-18"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/list",
+        "params": {}
+      },
+      "note": "Paste the connector access path from the NAI UI. NAI 2.8 documents MCP connectors against specification 2025-06-18 for tools/, prompts/, and resources/. This OpenAPI file does not publish that protocol URL."
+    },
+    {
+      "id": "mcp-tools-call",
+      "title": "MCP tools/call",
+      "method": "POST",
+      "path": "",
+      "auth": "bearer",
+      "headers": {
+        "Accept": "application/json, text/event-stream",
+        "MCP-Protocol-Version": "2025-06-18"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/call",
+        "params": {
+          "name": "tool_name",
+          "arguments": {}
+        }
+      },
+      "note": "Same transport as tools/list. Set the tool name you allowed on the connector."
+    },
+    {
+      "id": "mcp-prompts-list",
+      "title": "MCP prompts/list",
+      "method": "POST",
+      "path": "",
+      "auth": "bearer",
+      "headers": {
+        "Accept": "application/json, text/event-stream",
+        "MCP-Protocol-Version": "2025-06-18"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "prompts/list",
+        "params": {}
+      },
+      "note": "MCP 2025-06-18 prompts/list template."
+    },
+    {
+      "id": "mcp-resources-list",
+      "title": "MCP resources/list",
+      "method": "POST",
+      "path": "",
+      "auth": "bearer",
+      "headers": {
+        "Accept": "application/json, text/event-stream",
+        "MCP-Protocol-Version": "2025-06-18"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "resources/list",
+        "params": {}
+      },
+      "note": "MCP 2025-06-18 resources/list template."
+    }
+  ]
+}
